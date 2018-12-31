@@ -1,15 +1,47 @@
 - hosts: "{{ target_hosts | default('eap-hosts') }}"
+
+  vars:
+    bigip_server: 10.1.1.245
+    bigip_user: admin
+    bigip_password: admin
+    bigip_validate_certs: no
+    bigip_policy_name: foo2
+    bigip_rule_name: rule
+    bigip_fw_rule_src_addr: 1.2.3.4
+#    bigip_fw_rule_dest_addr: 8.8.8.8
+
   tasks:
-  - name: Create a basic policy with some rule stubs
+  - name: Create a basic policy named {{ bigip_policy_name }} with some rule stubs
     bigip_firewall_policy:
-      name: foo2
-#      rules:
-#        - rule1
-#        - rule2
-#        - rule3
+      name: "{{ bigip_policy_name }}"
       provider:
-        password: admin
-        server: 10.1.1.254
-        user: admin
-        validate_certs: no
+        password: "{{ bigip_password }}"
+        server: "{{ bigip_server }}"
+        user: "{{ bigip_user }}"
+        validate_certs: "{{ bigip_validate_certs }}"
     delegate_to: localhost
+  - name: Create a new rule in the {{ bigip_policy_name }} firewall policy
+    bigip_firewall_rule:
+      name: rule1
+      parent_policy: "{{ bigip_policy_name }}"
+      protocol: tcp
+      source:
+        - address: "{{ bigip_fw_rule_src_addr }}"
+      destination:
+        - address: "{{ bigip_fw_rule_dest_addr }}"
+      action: accept
+      logging: yes
+      provider:
+        password: "{{ bigip_password }}"
+        server: "{{ bigip_server }}"
+        user: "{{ bigip_user }}"
+        validate_certs: "{{ bigip_validate_certs }}"
+    delegate_to: localhost
+#  - name: Save the running configuration of the BIG-IP
+#    bigip_config:
+#      save: yes
+#      server:  "{{ bigip_server }}"
+#      password: "{{ bigip_password }}"
+#      user: "{{ bigip_user }}"
+#      validate_certs: "{{ bigip_validate_certs }}"
+#    delegate_to: localhost

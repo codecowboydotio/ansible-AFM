@@ -1,0 +1,21 @@
+- hosts: "{{ target_hosts | default('eap-hosts') }}"
+
+  vars:
+    bigip_server: 10.1.1.245
+    bigip_user: admin
+    bigip_password: admin
+    bigip_validate_certs: no
+    bigip_policy_name: foo2
+
+  tasks:
+  - name: Create a basic policy named {{ bigip_policy_name }} with some rule stubs
+    bigip_firewall_policy:
+      name: "{{ bigip_policy_name }}"
+      rules: 
+        - rule
+      provider:
+        password: "{{ bigip_password }}"
+        server: "{{ bigip_server }}"
+        user: "{{ bigip_user }}"
+        validate_certs: "{{ bigip_validate_certs }}"
+    delegate_to: localhost
