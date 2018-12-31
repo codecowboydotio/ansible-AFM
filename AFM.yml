@@ -1,0 +1,15 @@
+- hosts: "{{ target_hosts | default('eap-hosts') }}"
+  tasks:
+  - name: Create a basic policy with some rule stubs
+    bigip_firewall_policy:
+      name: foo2
+#      rules:
+#        - rule1
+#        - rule2
+#        - rule3
+      provider:
+        password: admin
+        server: 10.1.1.254
+        user: admin
+        validate_certs: no
+    delegate_to: localhost
