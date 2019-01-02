@@ -1,0 +1,43 @@
+{
+  "description": "",
+  "name": "",
+  "spec": [
+    {
+      "required": true,
+      "min": 7,
+      "default": "0.0.0.0",
+      "max": 1024,
+      "question_description": "IPV4 source address",
+      "choices": "",
+      "new_question": true,
+      "variable": "bigip_fw_rule_src_addr",
+      "question_name": "Source Address",
+      "type": "text"
+    },
+    {
+      "required": true,
+      "min": 7,
+      "default": "0.0.0.0",
+      "max": 1024,
+      "question_description": "IPv4 destintation Address",
+      "choices": "",
+      "new_question": true,
+      "variable": "bigip_fw_rule_dest_addr",
+      "question_name": "Destination Address",
+      "type": "text"
+    },
+    {
+      "question_description": "Name for the policy",
+      "min": 1,
+      "default": "ansible-generated-policy",
+      "max": 1024,
+      "required": true,
+      "choices": "",
+      "new_question": true,
+      "variable": "bigip_policy_name",
+      "question_name": "Policy Name",
+      "type": "text"
+    }
+  ]
+}
+
