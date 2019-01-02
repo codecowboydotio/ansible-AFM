@@ -5,7 +5,7 @@
     bigip_user: admin
     bigip_password: admin
     bigip_validate_certs: no
-    bigip_policy_name: foo2
+#    bigip_policy_name: foo2
 #    bigip_rule_name: rule
 #    bigip_fw_rule_src_addr: 1.2.3.4
 #    bigip_fw_rule_dest_addr: 8.8.8.8
@@ -22,7 +22,7 @@
     delegate_to: localhost
   - name: Create a new rule in the {{ bigip_policy_name }} firewall policy
     bigip_firewall_rule:
-      name: rule1
+      name: "{{ bigip_rule_name }}"
       parent_policy: "{{ bigip_policy_name }}"
       protocol: tcp
       source:
