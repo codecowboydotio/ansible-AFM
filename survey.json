@@ -37,6 +37,18 @@
       "variable": "bigip_policy_name",
       "question_name": "Policy Name",
       "type": "text"
+    },
+    {
+      "question_description": "Name for the rule that will be created under the policy",
+      "min": 1,
+      "default": "ansible-generated-rule",
+      "max": 1024,
+      "required": true,
+      "choices": "",
+      "new_question": true,
+      "variable": "bigip_rule_name",
+      "question_name": "Rule Name",
+      "type": "text"
     }
   ]
 }
