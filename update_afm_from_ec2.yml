@@ -3,6 +3,7 @@
   vars_files:
     - ../ansible/roles/ec2/vars/aws_creds.yml
   vars:
+    my_subnets: []
     bigip_server: 10.1.1.245
     bigip_user: admin
     bigip_password: admin
@@ -11,6 +12,7 @@
     bigip_rule_name: rule
 #    bigip_fw_rule_src_addr: 1.2.3.4
     bigip_fw_rule_dest_addr: 8.8.8.8
+    bigip_address_list_name: ansible-address-list
     tag_filter: fooble
     region: ap-southeast-2
 
@@ -34,7 +36,7 @@
         user: "{{ bigip_user }}"
         validate_certs: "{{ bigip_validate_certs }}"
     delegate_to: localhost
-  - name: Create a new rule in the {{ bigip_policy_name }} firewall policy
+  - name: Create a new individual rule in the {{ bigip_policy_name }} firewall policy
     bigip_firewall_rule:
       name: "{{ item.id }}"
       parent_policy: "{{ bigip_policy_name }}"
@@ -51,4 +53,37 @@
         user: "{{ bigip_user }}"
         validate_certs: "{{ bigip_validate_certs }}"
     with_items: "{{ ec2_subnet_facts.subnets }}"
+    delegate_to: localhost
+  - name: create a dictionary of subnets
+    set_fact:
+      my_subnets: "{{ my_subnets + [item.cidr_block] }}"
+    with_items: "{{ ec2_subnet_facts.subnets }}"
+  - debug: var=my_subnets
+  - name: Create an address list
+    bigip_firewall_address_list:
+      name: "{{ bigip_address_list_name }}"
+      addresses: "{{ my_subnets }}"
+      provider:
+        password: "{{ bigip_password }}"
+        server: "{{ bigip_server }}"
+        validate_certs: "{{ bigip_validate_certs }}"
+        user: "{{ bigip_user }}"
+      state: present
+    delegate_to: localhost
+  - name: Create a new addresslist based rule rule in the {{ bigip_policy_name }} firewall policy
+    bigip_firewall_rule:
+      name: address_list_rule
+      parent_policy: "{{ bigip_policy_name }}"
+      protocol: tcp
+      source:
+        - address_list: "{{ bigip_address_list_name }}"
+      destination:
+        - address: "{{ bigip_fw_rule_dest_addr }}"
+      action: accept
+      logging: yes
+      provider:
+        password: "{{ bigip_password }}"
+        server: "{{ bigip_server }}"
+        user: "{{ bigip_user }}"
+        validate_certs: "{{ bigip_validate_certs }}"
     delegate_to: localhost
