@@ -11,13 +11,15 @@
     bigip_rule_name: rule
 #    bigip_fw_rule_src_addr: 1.2.3.4
     bigip_fw_rule_dest_addr: 8.8.8.8
+    tag_filter: fooble
+    region: ap-southeast-2
 
   tasks:
   - name: get subnet facts
     ec2_vpc_subnet_facts:
-      region: ap-southeast-2
+      region: "{{ region }}"
       filters:
-        "tag:type": fooble
+        "tag:type": "{{ tag_filter }}"
       ec2_access_key: "{{ ec2_access_key }}"
       ec2_secret_key: "{{ ec2_secret_key }}"
     register: ec2_subnet_facts
@@ -49,4 +51,3 @@
         user: "{{ bigip_user }}"
         validate_certs: "{{ bigip_validate_certs }}"
     delegate_to: localhost
-
