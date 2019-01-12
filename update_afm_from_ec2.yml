@@ -1,0 +1,52 @@
+- hosts: "{{ target_hosts | default('localhost') }}"
+
+  vars_files:
+    - ../ansible/roles/ec2/vars/aws_creds.yml
+  vars:
+    bigip_server: 10.1.1.245
+    bigip_user: admin
+    bigip_password: admin
+    bigip_validate_certs: no
+    bigip_policy_name: foo2
+    bigip_rule_name: rule
+#    bigip_fw_rule_src_addr: 1.2.3.4
+    bigip_fw_rule_dest_addr: 8.8.8.8
+
+  tasks:
+  - name: get subnet facts
+    ec2_vpc_subnet_facts:
+      region: ap-southeast-2
+      filters:
+        "tag:type": fooble
+      ec2_access_key: "{{ ec2_access_key }}"
+      ec2_secret_key: "{{ ec2_secret_key }}"
+    register: ec2_subnet_facts
+  - debug: var=ec2_subnet_facts.subnets[0].cidr_block
+    delegate_to: localhost 
+  - name: Create a basic policy named {{ bigip_policy_name }} with some rule stubs
+    bigip_firewall_policy:
+      name: "{{ bigip_policy_name }}"
+      provider:
+        password: "{{ bigip_password }}"
+        server: "{{ bigip_server }}"
+        user: "{{ bigip_user }}"
+        validate_certs: "{{ bigip_validate_certs }}"
+    delegate_to: localhost
+  - name: Create a new rule in the {{ bigip_policy_name }} firewall policy
+    bigip_firewall_rule:
+      name: "{{ bigip_rule_name }}"
+      parent_policy: "{{ bigip_policy_name }}"
+      protocol: tcp
+      source:
+        - address: "{{ ec2_subnet_facts.subnets[0].cidr_block }}"
+      destination:
+        - address: "{{ bigip_fw_rule_dest_addr }}"
+      action: accept
+      logging: yes
+      provider:
+        password: "{{ bigip_password }}"
+        server: "{{ bigip_server }}"
+        user: "{{ bigip_user }}"
+        validate_certs: "{{ bigip_validate_certs }}"
+    delegate_to: localhost
+
