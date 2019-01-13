@@ -10,7 +10,7 @@ The subnets are searched for by tag name and value.
 
 Essentially, if you tag a subnet, and run the playbook, and AFM rule will be created.
 
-#### Pre-requisites
+### Pre-requisites
 You need a bigip :)
 
 1. BigIP with AFM modules installed.
@@ -18,7 +18,7 @@ You need a bigip :)
 3. f5-sdk python module installed
 4. AWS IAM access key and secret key
 
-#### Playbook variables
+### Playbook variables
 
 There are a number of variables in the playbook, these can be set statically or can be passed using the "--extra-vars" option from the command line.
 
@@ -48,5 +48,18 @@ There are a number of variables in the playbook, these can be set statically or 
     playbook_debug: This turns on additional debugging (set to true if you would like additional debugging).
 ```
 
-#### General Notes
+### General Notes
+
+As the F5 modules can be delegated to localhost, there is no need to have an ssh key on each F5 device. This is desirable in heavily outsourced environments, or 
+environments where the separation of duties requires it.
+
+This means that the Ansible control node needs to have a local ssh key installed, as the task is delegated to localhost.
+
+### Running
+
+```
+ansible-playbook update_afm_from_ec2.yml
+```
+
+
 
