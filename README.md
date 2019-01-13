@@ -22,7 +22,7 @@ You need a bigip :)
 
 There are a number of variables in the playbook, these can be set statically or can be passed using the "--extra-vars" option from the command line.
 
-...
+```
     my_subnets: [] - A dictionary that is used to build up an addresslist. No need to change this.
     bigip_server:  - The IP address of the BIGIP that you would like to configure.
     bigip_user:    - BIGIP username - user must have permissions to configure BIGIP.
@@ -35,4 +35,4 @@ There are a number of variables in the playbook, these can be set statically or 
     tag_filter: The tag that the subnets have.b
     region: AWS region name that you want to run against. The most up to date list is here (https://docs.aws.amazon.com/general/latest/gr/rande.html)
     playbook_debug: This turns on additional debugging (set to true if you would like additional debugging).
-...
+```
