@@ -2,6 +2,10 @@
 
 This repository contains samples to do various things with AFM on an F5 bigip.
 
+## Playbooks
+
+- update_afm_from_ec2.yml (https://github.com/codecowboydotio/ansible-AFM/blob/master/README.md#update_afm_from_ec2yml)
+
 
 ## update_afm_from_ec2.yml
 
@@ -33,7 +37,7 @@ There are a number of variables in the playbook, these can be set statically or 
 
     bigip_validate_certs: - If you are using self signed certificates, set to no, otherwise can be set to yes.
 
-    bigip_policy_name: - Name of the policy to create. This can be anything. f
+    bigip_policy_name: - Name of the policy to create. This can be anything. 
 
     bigip_rule_name: Name of the rule to create. 
 
