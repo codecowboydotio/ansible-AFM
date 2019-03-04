@@ -5,6 +5,7 @@
   vars:
     my_subnets: []
     bigip_server: 10.1.1.245
+    bigip_server_port: 443
     bigip_user: admin
     bigip_password: admin
     bigip_validate_certs: no
@@ -13,9 +14,16 @@
 #    bigip_fw_rule_src_addr: 1.2.3.4
     bigip_fw_rule_dest_addr: 8.8.8.8
     bigip_address_list_name: ansible-address-list
-    tag_filter: fooble
+    tag_filter: afmtag
     region: ap-southeast-2
     playbook_debug: false
+    provider:
+      password: "{{ bigip_password }}"
+      server: "{{ bigip_server }}"
+      user: "{{ bigip_user }}"
+      validate_certs: "{{ bigip_validate_certs }}"
+      server_port: "{{ bigip_server_port }}"
+
 
   tasks:
   - name: get subnet facts
@@ -33,11 +41,7 @@
   - name: Create a basic policy named {{ bigip_policy_name }} with some rule stubs
     bigip_firewall_policy:
       name: "{{ bigip_policy_name }}"
-      provider:
-        password: "{{ bigip_password }}"
-        server: "{{ bigip_server }}"
-        user: "{{ bigip_user }}"
-        validate_certs: "{{ bigip_validate_certs }}"
+      provider: "{{ provider }}"
     delegate_to: localhost
   - name: Create a new individual rule in the {{ bigip_policy_name }} firewall policy
     bigip_firewall_rule:
@@ -50,11 +54,7 @@
         - address: "{{ bigip_fw_rule_dest_addr }}"
       action: accept
       logging: yes
-      provider:
-        password: "{{ bigip_password }}"
-        server: "{{ bigip_server }}"
-        user: "{{ bigip_user }}"
-        validate_certs: "{{ bigip_validate_certs }}"
+      provider: "{{ provider }}"
     with_items: "{{ ec2_subnet_facts.subnets }}"
     delegate_to: localhost
   - name: create a dictionary of subnets
@@ -68,11 +68,7 @@
     bigip_firewall_address_list:
       name: "{{ bigip_address_list_name }}"
       addresses: "{{ my_subnets }}"
-      provider:
-        password: "{{ bigip_password }}"
-        server: "{{ bigip_server }}"
-        validate_certs: "{{ bigip_validate_certs }}"
-        user: "{{ bigip_user }}"
+      provider: "{{ provider }}"
       state: present
     delegate_to: localhost
   - name: Create a new addresslist based rule rule in the {{ bigip_policy_name }} firewall policy
@@ -86,9 +82,5 @@
         - address: "{{ bigip_fw_rule_dest_addr }}"
       action: accept
       logging: yes
-      provider:
-        password: "{{ bigip_password }}"
-        server: "{{ bigip_server }}"
-        user: "{{ bigip_user }}"
-        validate_certs: "{{ bigip_validate_certs }}"
+      provider: "{{ provider }}"
     delegate_to: localhost
