@@ -5,10 +5,10 @@
     bigip_user: admin
     bigip_password: admin
     bigip_validate_certs: no
-#    bigip_policy_name: foo2
-#    bigip_rule_name: rule
-#    bigip_fw_rule_src_addr: 1.2.3.4
-#    bigip_fw_rule_dest_addr: 8.8.8.8
+    bigip_policy_name: foo2
+    bigip_rule_name: rule
+    bigip_fw_rule_src_addr: 1.2.3.4
+    bigip_fw_rule_dest_addr: 8.8.8.8
 
   tasks:
   - name: Create a basic policy named {{ bigip_policy_name }} with some rule stubs
